@@ -7,9 +7,7 @@ from typing import Callable
 from unfold.ghidra.bridge import GhidraBridge
 
 
-def get_ghidra_tools(
-    bridge: GhidraBridge, binary_path
-) -> list[tuple[dict, Callable]]:
+def get_ghidra_tools(bridge: GhidraBridge, binary_path) -> list[tuple[dict, Callable]]:
     """Return tool definitions and handlers for Ghidra operations."""
 
     tools = []

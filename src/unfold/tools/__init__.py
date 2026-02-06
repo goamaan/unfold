@@ -1,24 +1,24 @@
 """Tool registry for the unfold agent."""
+
 from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Callable
+from typing import Callable
 
 from unfold.ghidra.bridge import GhidraBridge
 
 
-def get_all_tools(bridge: GhidraBridge, binary_path: Path) -> tuple[list[dict], dict[str, Callable]]:
-    """
-    Collect all tools and return them in Claude API format.
+def get_all_tools(
+    bridge: GhidraBridge, binary_path: Path
+) -> tuple[list[dict], dict[str, Callable]]:
+    """Collect all tools and return them in Claude API format.
 
     Returns:
-        A tuple of (tool_definitions, handler_map) where:
-        - tool_definitions: list of dicts for Claude's tools parameter
-        - handler_map: dict mapping tool name -> handler function
+        A tuple of (tool_definitions, handler_map).
     """
-    from .ghidra_tools import get_ghidra_tools
     from .file_tools import get_file_tools
+    from .ghidra_tools import get_ghidra_tools
 
     all_tool_pairs = []
     all_tool_pairs.extend(get_ghidra_tools(bridge, binary_path))
@@ -54,4 +54,19 @@ def execute_tool(handler_map: dict[str, Callable], tool_name: str, tool_input: d
             return json.dumps(result, indent=2)
         return str(result)
     except Exception as e:
-        return json.dumps({"error": f"{type(e).__name__}: {str(e)}"})
+        error_type = type(e).__name__
+        error_msg = str(e)
+
+        # Provide better messages for common JVM/Ghidra issues
+        if "jpype" in error_type.lower() or "jvm" in error_msg.lower():
+            error_msg = (
+                f"JVM error during {tool_name}: {error_msg}. "
+                "If this is an OutOfMemoryError, try: export _JAVA_OPTIONS='-Xmx4g'"
+            )
+        elif "NullPointerException" in error_msg:
+            error_msg = (
+                f"Ghidra returned null during {tool_name}. "
+                "The binary may not have been analyzed yet — try analyze_binary first."
+            )
+
+        return json.dumps({"error": f"{error_type}: {error_msg}"})

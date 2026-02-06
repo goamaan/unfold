@@ -16,7 +16,8 @@ Be thorough but focused. Don't decompile every function — focus on the ones th
 
 
 MODES = {
-    "explore": SYSTEM_BASE + """
+    "explore": SYSTEM_BASE
+    + """
 
 ## Mode: Exploration
 
@@ -31,8 +32,8 @@ Approach:
 6. Summarize: what does this program do? What are the key data structures? What algorithms does it use?
 
 Provide your analysis as a clear, structured report.""",
-
-    "ctf": SYSTEM_BASE + """
+    "ctf": SYSTEM_BASE
+    + """
 
 ## Mode: CTF Challenge Solving
 
@@ -48,8 +49,8 @@ Approach:
 7. Look for common CTF patterns: XOR encryption, base64, custom ciphers, anti-debugging
 
 If you can determine the flag, provide it. If not, explain what you found and what's blocking you.""",
-
-    "vuln": SYSTEM_BASE + """
+    "vuln": SYSTEM_BASE
+    + """
 
 ## Mode: Vulnerability Hunting
 
@@ -72,8 +73,8 @@ For each vulnerability found, provide:
 2. The type of vulnerability
 3. How it could be exploited
 4. Severity assessment (Critical/High/Medium/Low)""",
-
-    "annotate": SYSTEM_BASE + """
+    "annotate": SYSTEM_BASE
+    + """
 
 ## Mode: Annotation
 
@@ -89,8 +90,8 @@ Approach:
 4. Identify data structures from how memory is accessed
 
 After renaming, provide a summary of all renamed functions.""",
-
-    "explain": SYSTEM_BASE + """
+    "explain": SYSTEM_BASE
+    + """
 
 ## Mode: Explanation
 

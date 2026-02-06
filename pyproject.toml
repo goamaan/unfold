@@ -1,6 +1,6 @@
 [project]
 name = "unfold"
-version = "0.1.0"
+version = "0.2.0"
 description = "AI-powered reverse engineering assistant"
 authors = [
     { name = "Amaan", email = "goamaan12@gmail.com" }
@@ -33,5 +33,49 @@ unfold = "unfold.cli.main:main"
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.9.0",
+    "mypy>=1.14.0",
+    "pre-commit>=4.0.0",
+    "pytest>=8.0.0",
+    "pytest-mock>=3.14.0",
+]
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/unfold"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+
+[tool.ruff.lint.per-file-ignores]
+"src/unfold/agent/prompts.py" = ["E501"]
+"src/unfold/tools/ghidra_tools.py" = ["E501"]
+"src/unfold/tools/file_tools.py" = ["E501"]
+"src/unfold/report.py" = ["E501"]
+"src/unfold/config.py" = ["E501"]
+"tests/**" = ["E501"]
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = false
+warn_unused_configs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "unfold.agent.core"
+# Streaming code uses complex SDK union types — suppress until SDK types improve
+disable_error_code = ["union-attr", "arg-type", "attr-defined", "var-annotated", "assignment", "operator"]
+
+[[tool.mypy.overrides]]
+module = "unfold.tools.*"
+disable_error_code = ["arg-type"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
